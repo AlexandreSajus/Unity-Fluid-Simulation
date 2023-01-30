@@ -10,8 +10,8 @@ public class Config : MonoBehaviour
     public static float BOTTOM = 0f;  // Simulation space ground
     public static float DAM = -0.3f;  // Position of the dam, simulation space is between -0.5 and 0.5
     public static int DAM_BREAK = 200; // Number of frames before the dam breaks
-    public static float DT = 30f;  // Time step
-    public static float WALL_POS = 0.05f; // Position adjustment for particles that are too close to the walls
+    public static float DT = 20f;  // Time step
+    public static float WALL_POS = 0.08f; // Position adjustment for particles that are too close to the walls
 
     // Physics parameters
     public static float G = 0.02f * 0.25f;  // Acceleration of gravity

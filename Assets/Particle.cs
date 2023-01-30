@@ -131,7 +131,7 @@ public class Particle : MonoBehaviour
         vel = vel_tangent - normal * vel_normal * WALL_DAMP;
 
         // Move the particle out of the wall
-        pos += normal * WALL_POS;
+        pos = collision.contacts[0].point + normal * WALL_POS;
     }
 
 }
