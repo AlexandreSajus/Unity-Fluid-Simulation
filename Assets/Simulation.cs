@@ -36,7 +36,8 @@ public class Simulation : MonoBehaviour
     void Start() {
         Base_Particle = GameObject.Find("Base_Particle");
 
-        /* Create a grid of particles */
+
+        /* 
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 // Create a new particle
@@ -46,6 +47,7 @@ public class Simulation : MonoBehaviour
                 
             }
         }
+        */
     }
 
     private float density;
