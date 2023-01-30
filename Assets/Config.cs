@@ -7,7 +7,7 @@ public class Config : MonoBehaviour
     // Simulation parameters
     public static int N = 20; // Number of particles
     public static float SIM_W = 0.5f;  // Simulation space width
-    public static float BOTTOM = -1f;  // Simulation space ground
+    public static float BOTTOM = -2f;  // Simulation space ground
     public static float DAM = -0.3f;  // Position of the dam, simulation space is between -0.5 and 0.5
     public static int DAM_BREAK = 200; // Number of frames before the dam breaks
     public static float DT = 20f;  // Time step

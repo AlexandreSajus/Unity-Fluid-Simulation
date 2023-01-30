@@ -22,16 +22,18 @@ public class Shower : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Time.frameCount % spawn_rate == 0) {
-        // Create a new particle at the current position of the object
-        GameObject new_particle = Instantiate(Base_Particle, transform.position, Quaternion.identity);
-        // update the particle's position
-        new_particle.GetComponent<Particle>().pos = transform.position;
-        new_particle.GetComponent<Particle>().previous_pos = transform.position;
-        new_particle.GetComponent<Particle>().visual_pos = transform.position;
-        new_particle.GetComponent<Particle>().vel = init_speed;
-        // Set as child of the Simulation object
-        new_particle.transform.parent = Simulation.transform;
+        // If Simulation has less than 1000 children
+        if (Simulation.transform.childCount < 500)
+        {
+            // Create a new particle at the current position of the object
+            GameObject new_particle = Instantiate(Base_Particle, transform.position, Quaternion.identity);
+            // update the particle's position
+            new_particle.GetComponent<Particle>().pos = transform.position;
+            new_particle.GetComponent<Particle>().previous_pos = transform.position;
+            new_particle.GetComponent<Particle>().visual_pos = transform.position;
+            new_particle.GetComponent<Particle>().vel = init_speed;
+            // Set as child of the Simulation object
+            new_particle.transform.parent = Simulation.transform;
+        }
     }
-}
 }
