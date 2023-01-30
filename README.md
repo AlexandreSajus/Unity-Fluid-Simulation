@@ -1,4 +1,4 @@
-# Unity-Fluid-Simulation
+# Unity Fluid Simulation
 A Unity Realtime Fluid Simulation using SPH and Unity
 
 <p align="center">
