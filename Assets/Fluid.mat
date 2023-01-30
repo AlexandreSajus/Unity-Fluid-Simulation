@@ -64,10 +64,10 @@ Material:
     m_Ints: []
     m_Floats:
     - _EnableExternalAlpha: 0
-    - _FoamThickness: 1.93
+    - _FoamThickness: 10
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Thickness: 0.7
+    - _Thickness: 0.6
     m_Colors:
     - _Color: {r: 0, g: 0.73006177, b: 1, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
