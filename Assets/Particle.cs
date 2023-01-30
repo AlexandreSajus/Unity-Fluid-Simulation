@@ -94,9 +94,9 @@ public class Particle : MonoBehaviour
         // Calculate velocity
         velocity = vel.magnitude;
 
-        // Reduces the velocity if it is too high
+        // Set to MAX_VEL if velocity is greater than MAX_VEL
         if (velocity > MAX_VEL) {
-            vel *= VEL_DAMP;
+            vel = vel.normalized * MAX_VEL;
         }
 
         // Reset density
@@ -105,6 +105,14 @@ public class Particle : MonoBehaviour
 
         // Reset neighbors
         neighbours = new list();
+
+        // If pos under BOTTOM, delete particle
+        if (pos.y < BOTTOM) {
+            // If name not Base_Particle, delete particle
+            if (name != "Base_Particle") {
+                Destroy(gameObject);
+            }
+        }
     }
 
     public void CalculatePressure() {
@@ -112,7 +120,7 @@ public class Particle : MonoBehaviour
         press_near = K_NEAR * rho_near;
     }
 
-    void OnCollisionEnter2D(Collision2D collision) {
+    void OnCollisionStay2D(Collision2D collision) {
         // Calculate the normal vector of the collision
         vector2 normal = collision.contacts[0].normal;
 

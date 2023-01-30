@@ -7,7 +7,7 @@ public class Config : MonoBehaviour
     // Simulation parameters
     public static int N = 20; // Number of particles
     public static float SIM_W = 0.5f;  // Simulation space width
-    public static float BOTTOM = 0f;  // Simulation space ground
+    public static float BOTTOM = -1f;  // Simulation space ground
     public static float DAM = -0.3f;  // Position of the dam, simulation space is between -0.5 and 0.5
     public static int DAM_BREAK = 200; // Number of frames before the dam breaks
     public static float DT = 20f;  // Time step
@@ -23,7 +23,7 @@ public class Config : MonoBehaviour
     // Neighbour radius, if the distance between two particles is less than R, they are neighbours
     public static float R = SPACING * 1.25f;
     public static float SIGMA = 0.2f;  // Viscosity factor
-    public static float MAX_VEL = 2.0f;  // Maximum velocity of particles, used to avoid instability
+    public static float MAX_VEL = 0.05f;  // Maximum velocity of particles, used to avoid instability
     // Wall constraints factor, how much the particle is pushed away from the simulation walls
     public static float WALL_DAMP = 0.2f;
     public static float VEL_DAMP = 0.5f;  // Velocity reduction factor when particles are going above MAX_VEL
