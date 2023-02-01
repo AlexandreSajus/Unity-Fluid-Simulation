@@ -23,7 +23,7 @@ public class Config : MonoBehaviour
     // Neighbour radius, if the distance between two particles is less than R, they are neighbours
     public static float R = SPACING * 1.25f;
     public static float SIGMA = 0.2f;  // Viscosity factor
-    public static float MAX_VEL = 0.05f;  // Maximum velocity of particles, used to avoid instability
+    public static float MAX_VEL = 0.2f;  // Maximum velocity of particles, used to avoid instability
     // Wall constraints factor, how much the particle is pushed away from the simulation walls
     public static float WALL_DAMP = 0.2f;
     public static float VEL_DAMP = 0.5f;  // Velocity reduction factor when particles are going above MAX_VEL

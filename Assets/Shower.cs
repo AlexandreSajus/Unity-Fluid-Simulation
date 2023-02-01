@@ -25,6 +25,11 @@ public class Shower : MonoBehaviour
         // If Simulation has less than 1000 children
         if (Simulation.transform.childCount < 500)
         {
+            // Spawn rate
+            if (Time.frameCount % spawn_rate != 0)
+            {
+                return;
+            }
             // Create a new particle at the current position of the object
             GameObject new_particle = Instantiate(Base_Particle, transform.position, Quaternion.identity);
             // update the particle's position
