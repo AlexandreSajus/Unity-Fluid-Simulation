@@ -11,7 +11,8 @@ public class Shower : MonoBehaviour
     // Get the Base_Particle object from Scene
     public GameObject Base_Particle;
     public Vector2 init_speed = new Vector2(1.0f, 0.0f);
-    public int spawn_rate = 1;
+    public float spawn_rate = 1f;
+    private float time;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,23 +23,29 @@ public class Shower : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // If Simulation has less than 1000 children
+        // Limit the number of particles
         if (Simulation.transform.childCount < 1000)
         {
-            // Spawn rate
-            if (Time.frameCount % spawn_rate != 0)
+            // Spawn particles at a constant rate
+            time += Time.deltaTime;
+            if (time < 1.0f / spawn_rate)
             {
                 return;
             }
             // Create a new particle at the current position of the object
             GameObject new_particle = Instantiate(Base_Particle, transform.position, Quaternion.identity);
+
             // update the particle's position
             new_particle.GetComponent<Particle>().pos = transform.position;
             new_particle.GetComponent<Particle>().previous_pos = transform.position;
             new_particle.GetComponent<Particle>().visual_pos = transform.position;
             new_particle.GetComponent<Particle>().vel = init_speed;
+
             // Set as child of the Simulation object
             new_particle.transform.parent = Simulation.transform;
+
+            // Reset time
+            time = 0.0f;
         }
     }
 }

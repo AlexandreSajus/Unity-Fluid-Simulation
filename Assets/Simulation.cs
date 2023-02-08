@@ -30,12 +30,12 @@ public class Simulation : MonoBehaviour
     public static float DT = Config.DT;
     public static float WALL_POS = Config.WALL_POS;
 
-    // Get Base_Particle object from Scene
+    // Base Particle Object
     public GameObject Base_Particle;
 
+    // Spatial Partitioning Grid Variables
     public int grid_size_x = 60;
     public int grid_size_y = 30;
-    // Create a grid, a grid of lists of particles
     public list[,] grid;
     public float x_min = 1.8f;
     public float x_max = 6.4f;
@@ -46,20 +46,7 @@ public class Simulation : MonoBehaviour
     {
         Base_Particle = GameObject.Find("Base_Particle");
 
-
-        /* 
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                // Create a new particle
-                GameObject new_particle = Instantiate(Base_Particle, new Vector3(i * SPACING, j * SPACING, 0), Quaternion.identity);
-                // Set as child of the Simulation object
-                new_particle.transform.parent = gameObject.transform;
-                
-            }
-        }
-        */
-
-        // Initialize grid
+        // Initialize spatial partitioning grid
         grid = new list[grid_size_x, grid_size_y];
         for (int i = 0; i < grid_size_x; i++)
         {
@@ -70,6 +57,7 @@ public class Simulation : MonoBehaviour
         }
     }
 
+    // Utility variables
     private float density;
     private float density_near;
     private float dist;
@@ -103,7 +91,7 @@ public class Simulation : MonoBehaviour
             density = 0.0f;
             density_near = 0.0f;
 
-            // for each particle in the 9 neighboring cells
+            // for each particle in the 9 neighboring cells in the spatial partitioning grid
             for (int i = p.grid_x - 1; i <= p.grid_x + 1; i++)
             {
                 for (int j = p.grid_y - 1; j <= p.grid_y + 1; j++)
@@ -124,7 +112,8 @@ public class Simulation : MonoBehaviour
                                 p.rho_near += normal_distance * normal_distance * normal_distance;
                                 n.rho += normal_distance * normal_distance;
                                 n.rho_near += normal_distance * normal_distance * normal_distance;
-                                // Add n to p's neighbors
+
+                                // Add n to p's neighbors for later use
                                 p.neighbours.Add(n);
                             }
                         }
@@ -201,8 +190,6 @@ public class Simulation : MonoBehaviour
     {
 
         // Add children GameObjects to particles list
-        // Time the particle list creation
-
         time = Time.realtimeSinceStartup;
         particles.Clear();
         foreach (Transform child in transform)
@@ -210,9 +197,7 @@ public class Simulation : MonoBehaviour
             particles.Add(child.GetComponent<Particle>());
         }
 
-        // Assign particles to grid
-
-        // clear grid
+        // Assign particles to spatial partitioning grid
         for (int i = 0; i < grid_size_x; i++)
         {
             for (int j = 0; j < grid_size_y; j++)
@@ -220,7 +205,6 @@ public class Simulation : MonoBehaviour
                 grid[i, j].Clear();
             }
         }
-        time = Time.realtimeSinceStartup;
         foreach (Particle p in particles)
         {
             // Assign grid_x and grid_y using x_min y_min x_max y_max
@@ -236,10 +220,6 @@ public class Simulation : MonoBehaviour
         time = Time.realtimeSinceStartup - time;
         //Debug.Log("Time to assign particles to grid: " + time);
 
-        time = Time.realtimeSinceStartup - time;
-        //Debug.Log("Time to create particle list: " + time);
-
-        // Time the updates
         time = Time.realtimeSinceStartup;
         foreach (Particle p in particles)
         {
@@ -249,14 +229,12 @@ public class Simulation : MonoBehaviour
         time = Time.realtimeSinceStartup - time;
         //Debug.Log("Time to update particles: " + time);
 
-        // Time the calculations
         time = Time.realtimeSinceStartup;
         calculate_density(particles);
         time = Time.realtimeSinceStartup - time;
         //Debug.Log("Time to calculate density: " + time);
 
         time = Time.realtimeSinceStartup;
-        // For each particle
         foreach (Particle p in particles)
         {
             p.CalculatePressure();

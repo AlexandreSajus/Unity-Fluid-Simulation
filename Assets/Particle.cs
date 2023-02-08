@@ -60,6 +60,8 @@ public class Particle : MonoBehaviour
     public vector2 vel = vector2.zero;
     public vector2 force = new vector2(0f, -G);
     public float velocity = 0.0f;
+
+    // Spatial partitioning position in grid
     public int grid_x;
     public int grid_y;
 
