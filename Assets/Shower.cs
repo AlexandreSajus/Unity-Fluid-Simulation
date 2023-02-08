@@ -23,7 +23,7 @@ public class Shower : MonoBehaviour
     void Update()
     {
         // If Simulation has less than 1000 children
-        if (Simulation.transform.childCount < 800)
+        if (Simulation.transform.childCount < 1000)
         {
             // Spawn rate
             if (Time.frameCount % spawn_rate != 0)

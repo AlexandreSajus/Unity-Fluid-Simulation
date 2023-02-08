@@ -33,8 +33,8 @@ public class Simulation : MonoBehaviour
     // Get Base_Particle object from Scene
     public GameObject Base_Particle;
 
-    public int grid_size_x = 200;
-    public int grid_size_y = 100;
+    public int grid_size_x = 60;
+    public int grid_size_y = 30;
     // Create a grid, a grid of lists of particles
     public list[,] grid;
     public float x_min = 1.8f;
