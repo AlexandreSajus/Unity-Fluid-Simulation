@@ -60,6 +60,8 @@ public class Particle : MonoBehaviour
     public vector2 vel = vector2.zero;
     public vector2 force = new vector2(0f, -G);
     public float velocity = 0.0f;
+    public int grid_x;
+    public int grid_y;
 
     void Start()
     {
@@ -95,7 +97,8 @@ public class Particle : MonoBehaviour
         velocity = vel.magnitude;
 
         // Set to MAX_VEL if velocity is greater than MAX_VEL
-        if (velocity > MAX_VEL) {
+        if (velocity > MAX_VEL)
+        {
             vel = vel.normalized * MAX_VEL;
         }
 
@@ -107,20 +110,24 @@ public class Particle : MonoBehaviour
         neighbours = new list();
 
         // If pos under BOTTOM, delete particle
-        if (pos.y < BOTTOM) {
+        if (pos.y < BOTTOM)
+        {
             // If name not Base_Particle, delete particle
-            if (name != "Base_Particle") {
+            if (name != "Base_Particle")
+            {
                 Destroy(gameObject);
             }
         }
     }
 
-    public void CalculatePressure() {
+    public void CalculatePressure()
+    {
         press = K * (rho - REST_DENSITY);
         press_near = K_NEAR * rho_near;
     }
 
-    void OnCollisionStay2D(Collision2D collision) {
+    void OnCollisionStay2D(Collision2D collision)
+    {
         // Calculate the normal vector of the collision
         vector2 normal = collision.contacts[0].normal;
 
@@ -128,7 +135,8 @@ public class Particle : MonoBehaviour
         float vel_normal = Vector2.Dot(vel, normal);
 
         // If the velocity is positive, the particle is moving away from the wall
-        if (vel_normal > 0) {
+        if (vel_normal > 0)
+        {
             return;
         }
 

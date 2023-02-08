@@ -32,8 +32,18 @@ public class Simulation : MonoBehaviour
 
     // Get Base_Particle object from Scene
     public GameObject Base_Particle;
-    
-    void Start() {
+
+    public int grid_size_x = 200;
+    public int grid_size_y = 100;
+    // Create a grid, a grid of lists of particles
+    public list[,] grid;
+    public float x_min = 1.8f;
+    public float x_max = 6.4f;
+    public float y_min = -1.4f;
+    public float y_max = 0.61f;
+
+    void Start()
+    {
         Base_Particle = GameObject.Find("Base_Particle");
 
 
@@ -48,6 +58,16 @@ public class Simulation : MonoBehaviour
             }
         }
         */
+
+        // Initialize grid
+        grid = new list[grid_size_x, grid_size_y];
+        for (int i = 0; i < grid_size_x; i++)
+        {
+            for (int j = 0; j < grid_size_y; j++)
+            {
+                grid[i, j] = new list();
+            }
+        }
     }
 
     private float density;
@@ -63,8 +83,10 @@ public class Simulation : MonoBehaviour
     private vector2 pressure_vector;
     private vector2 normal_p_to_n;
     private vector2 viscosity_force;
+    private float time;
 
-    public void calculate_density(list particles) {
+    public void calculate_density(list particles)
+    {
         /*
             Calculates density of particles
             Density is calculated by summing the relative distance of neighboring particles
@@ -76,23 +98,37 @@ public class Simulation : MonoBehaviour
         */
 
         // For each particle
-        foreach (Particle p in particles) {
+        foreach (Particle p in particles)
+        {
             density = 0.0f;
             density_near = 0.0f;
 
-            // For each neighbor
-            foreach (Particle n in particles) {
-                // Calculate distance between particles
-                dist = Vector2.Distance(p.pos, n.pos);
+            // for each particle in the 9 neighboring cells
+            for (int i = p.grid_x - 1; i <= p.grid_x + 1; i++)
+            {
+                for (int j = p.grid_y - 1; j <= p.grid_y + 1; j++)
+                {
+                    // If the cell is in the grid
+                    if (i >= 0 && i < grid_size_x && j >= 0 && j < grid_size_y)
+                    {
+                        // For each particle in the cell
+                        foreach (Particle n in grid[i, j])
+                        {
+                            // Calculate distance between particles
+                            dist = Vector2.Distance(p.pos, n.pos);
 
-                if (dist < R) {
-                    normal_distance = 1 - dist / R;
-                    p.rho += normal_distance * normal_distance;
-                    p.rho_near += normal_distance * normal_distance * normal_distance;
-                    n.rho += normal_distance * normal_distance;
-                    n.rho_near += normal_distance * normal_distance * normal_distance;
-                    // Add n to p's neighbors
-                    p.neighbours.Add(n);
+                            if (dist < R)
+                            {
+                                normal_distance = 1 - dist / R;
+                                p.rho += normal_distance * normal_distance;
+                                p.rho_near += normal_distance * normal_distance * normal_distance;
+                                n.rho += normal_distance * normal_distance;
+                                n.rho_near += normal_distance * normal_distance * normal_distance;
+                                // Add n to p's neighbors
+                                p.neighbours.Add(n);
+                            }
+                        }
+                    }
                 }
             }
             p.rho += density;
@@ -100,7 +136,8 @@ public class Simulation : MonoBehaviour
         }
     }
 
-    public void create_pressure(list particles) {
+    public void create_pressure(list particles)
+    {
         /*
             Calculates pressure force of particles
             Neighbors list and pressure have already been calculated by calculate_density
@@ -111,10 +148,12 @@ public class Simulation : MonoBehaviour
             particles (list[Particle]): list of particles
         */
 
-        foreach (Particle p in particles) {
+        foreach (Particle p in particles)
+        {
             pressure_force = vector2.zero;
 
-            foreach (Particle n in p.neighbours) {
+            foreach (Particle n in p.neighbours)
+            {
                 particule_to_neighbor = n.pos - p.pos;
                 distance = Vector2.Distance(p.pos, n.pos);
 
@@ -123,12 +162,13 @@ public class Simulation : MonoBehaviour
                 pressure_vector = total_pressure * particule_to_neighbor.normalized;
                 n.force += pressure_vector;
                 pressure_force += pressure_vector;
-                }
-            p.force -= pressure_force;
             }
+            p.force -= pressure_force;
         }
+    }
 
-    public void calculate_viscosity(list particles) {
+    public void calculate_viscosity(list particles)
+    {
         /*
         Calculates the viscosity force of particles
         Force = (relative distance of particles)*(viscosity weight)*(velocity difference of particles)
@@ -137,17 +177,20 @@ public class Simulation : MonoBehaviour
         Args:
             particles (list[Particle]): list of particles
         */
-        foreach (Particle p in particles) {
-            foreach (Particle n in p.neighbours) {
+        foreach (Particle p in particles)
+        {
+            foreach (Particle n in p.neighbours)
+            {
                 particule_to_neighbor = n.pos - p.pos;
                 distance = Vector2.Distance(p.pos, n.pos);
                 normal_p_to_n = particule_to_neighbor.normalized;
                 relative_distance = distance / R;
-                velocity_difference  = Vector2.Dot(p.vel - n.vel, normal_p_to_n);
-                if (velocity_difference > 0) {
+                velocity_difference = Vector2.Dot(p.vel - n.vel, normal_p_to_n);
+                if (velocity_difference > 0)
+                {
                     viscosity_force = (1 - relative_distance) * velocity_difference * SIGMA * normal_p_to_n;
-                    p.vel -= viscosity_force*0.5f;
-                    n.vel += viscosity_force*0.5f;
+                    p.vel -= viscosity_force * 0.5f;
+                    n.vel += viscosity_force * 0.5f;
                 }
             }
         }
@@ -158,27 +201,77 @@ public class Simulation : MonoBehaviour
     {
 
         // Add children GameObjects to particles list
+        // Time the particle list creation
+
+        time = Time.realtimeSinceStartup;
         particles.Clear();
         foreach (Transform child in transform)
         {
             particles.Add(child.GetComponent<Particle>());
         }
 
+        // Assign particles to grid
+
+        // clear grid
+        for (int i = 0; i < grid_size_x; i++)
+        {
+            for (int j = 0; j < grid_size_y; j++)
+            {
+                grid[i, j].Clear();
+            }
+        }
+        time = Time.realtimeSinceStartup;
+        foreach (Particle p in particles)
+        {
+            // Assign grid_x and grid_y using x_min y_min x_max y_max
+            p.grid_x = (int)((p.pos.x - x_min) / (x_max - x_min) * grid_size_x);
+            p.grid_y = (int)((p.pos.y - y_min) / (y_max - y_min) * grid_size_y);
+
+            // Add particle to grid if it is within bounds
+            if (p.grid_x >= 0 && p.grid_x < grid_size_x && p.grid_y >= 0 && p.grid_y < grid_size_y)
+            {
+                grid[p.grid_x, p.grid_y].Add(p);
+            }
+        }
+        time = Time.realtimeSinceStartup - time;
+        //Debug.Log("Time to assign particles to grid: " + time);
+
+        time = Time.realtimeSinceStartup - time;
+        //Debug.Log("Time to create particle list: " + time);
+
+        // Time the updates
+        time = Time.realtimeSinceStartup;
         foreach (Particle p in particles)
         {
             p.UpdateState();
         }
 
-        calculate_density(particles);
+        time = Time.realtimeSinceStartup - time;
+        //Debug.Log("Time to update particles: " + time);
 
+        // Time the calculations
+        time = Time.realtimeSinceStartup;
+        calculate_density(particles);
+        time = Time.realtimeSinceStartup - time;
+        //Debug.Log("Time to calculate density: " + time);
+
+        time = Time.realtimeSinceStartup;
         // For each particle
         foreach (Particle p in particles)
         {
             p.CalculatePressure();
         }
+        time = Time.realtimeSinceStartup - time;
+        //Debug.Log("Time to calculate pressure: " + time);
 
+        time = Time.realtimeSinceStartup;
         create_pressure(particles);
+        time = Time.realtimeSinceStartup - time;
+        //Debug.Log("Time to create pressure: " + time);
 
+        time = Time.realtimeSinceStartup;
         calculate_viscosity(particles);
+        time = Time.realtimeSinceStartup - time;
+        //Debug.Log("Time to calculate viscosity: " + time);
     }
 }

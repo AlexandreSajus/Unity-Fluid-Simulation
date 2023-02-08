@@ -16,14 +16,14 @@ public class Shower : MonoBehaviour
     void Start()
     {
         Simulation = GameObject.Find("Simulation");
-        Base_Particle = GameObject.Find("Base_Particle");   
+        Base_Particle = GameObject.Find("Base_Particle");
     }
 
     // Update is called once per frame
     void Update()
     {
         // If Simulation has less than 1000 children
-        if (Simulation.transform.childCount < 500)
+        if (Simulation.transform.childCount < 800)
         {
             // Spawn rate
             if (Time.frameCount % spawn_rate != 0)
